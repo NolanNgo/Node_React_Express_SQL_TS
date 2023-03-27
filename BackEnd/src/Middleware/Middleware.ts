@@ -1,18 +1,33 @@
 // const jwt = require("jsonwebtoken");
-import jwt, { Secret} from 'jsonwebtoken';
+import jwt, { Secret, JwtPayload} from 'jsonwebtoken';
 import dotenv from "dotenv";
 import express, { Request, Response , NextFunction} from "express";
 import { CustomResponse, Json } from "../Response/Response";
 dotenv.config();
 
+// Định nghĩa định dạng của interfaceToken
 export interface TokenInterface {
-    id: string;
-    user_type_id: string;
+    data : {
+        id: string;
+        user_type_id: string;
+        username : string;
+    }
 }
 
+
+// Định nghĩa interface mở rộng của Request để đính user_id và loại người dùng vào ở middleware
+export interface RequestCheckToken extends Request {
+    user_id: string;
+    user_type_id: string;
+    username : string;
+
+}
+
+// Tạo secret key có dạng là Secret là 1 dạng trong jsonwebtoken 
 export const SECRET_KEY: Secret = process.env.ACCESS_TOKEN!;
 
-export const checkToken = (req : Request , res : Response ,  next: NextFunction ) : any =>{
+
+export const checkToken = (req : Request , res : Response ,  next: NextFunction ) =>{
     try{
         const authorToken = req.header("Authorization");
         const token = authorToken && authorToken.split(" ")[1];
@@ -20,16 +35,20 @@ export const checkToken = (req : Request , res : Response ,  next: NextFunction 
             return res.json({ code: 404, message: "Access Token Not Found " , data: {} });
         }
         const decrypt = jwt.verify(token, SECRET_KEY);
-		req.user_id = (decrypt as TokenInterface).id;
-		req.user_type_id = (decrypt as TokenInterface).user_type_id;
+		(req as RequestCheckToken).user_id = (decrypt as TokenInterface).data.id;
+        (req as RequestCheckToken).user_type_id = (decrypt as TokenInterface).data.user_type_id;
+        (req as RequestCheckToken).username = (decrypt as TokenInterface).data.username;
 		next();
     }catch(error : any){
         return res.json({ code: 500, message: error.message , data: {}});
+        // res.status(401).send('Please authenticate');
     }
 }
 
 export const createAccessToken = (data : Object) : String =>{
-    const accessToken = jwt.sign({ data }, SECRET_KEY ,  {
+    const accessToken = jwt.sign({
+        data
+    }, SECRET_KEY ,  {
         expiresIn: '2 days',
     });
     return accessToken
