@@ -5,6 +5,7 @@ export interface Json {
     data: Object;
     message: String
     AccessToken? : String
+    type : boolean
 }
 
 type Promise<T = Response> = (body?: Json) => T;

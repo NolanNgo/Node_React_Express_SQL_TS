@@ -63,18 +63,21 @@ export const signUp = async (req: Request, res: Response): Promise<CustomRespons
             return res.json({
                 code: 500,
                 data: {},
+                type : false,
                 message: "Đăng kí thất bại"
             });
         }
         return res.json({
             code: 200,
             data: {},
+            type : true,
             message: "Đăng kí thành công"
         });
     } catch (error: any) {
         return res.json({
             code: 400,
             data: {},
+            type : false,
             message: `${error.message}`
         });
     }
@@ -97,6 +100,7 @@ export const signIn = async (req: Request , res : Response) : Promise<CustomResp
             return res.json({
                 code: 404,
                 data: {},
+                type : false,
                 message: "Tài khoản không tồn tại"
             });
         }
@@ -105,6 +109,7 @@ export const signIn = async (req: Request , res : Response) : Promise<CustomResp
             return res.json({
                 code: 404,
                 data: {},
+                type : false,
                 message: "Tài khoản hoặc mật khẩu không chính xác !"
             });
         }
@@ -112,6 +117,7 @@ export const signIn = async (req: Request , res : Response) : Promise<CustomResp
         return res.json({
             code: 200,
             data: account,
+            type : true,
             message: "Đăng nhập thành công",
             AccessToken : accessToken
         });
@@ -119,6 +125,7 @@ export const signIn = async (req: Request , res : Response) : Promise<CustomResp
         return res.json({
             code: 400,
             data: {},
+            type : false,
             message: `${error.message}`
         });
     }
@@ -172,6 +179,7 @@ export const updateProfile = async (req : Request , res: Response) : Promise<Cus
             return res.json({
                 code: 404,
                 data: {},
+                type : false,
                 message: "Tài khoản không tồn tại"
             });
         }
@@ -180,6 +188,7 @@ export const updateProfile = async (req : Request , res: Response) : Promise<Cus
         return res.json({
             code: 200,
             data: account,
+            type : true,
             message: "Thay đổi thông tin thành công",
             AccessToken : accessToken
         });
@@ -189,6 +198,7 @@ export const updateProfile = async (req : Request , res: Response) : Promise<Cus
         return res.json({
             code: 400,
             data: {},
+            type : false,
             message: `${error.message}`
         });
     }   
@@ -213,6 +223,7 @@ export const updatePassword = async (req : Request , res: Response) : Promise<Cu
             return res.json({
                 code: 404,
                 data: {},
+                type : false,
                 message: "Tài khoản không tồn tại"
             });
         }
@@ -222,6 +233,7 @@ export const updatePassword = async (req : Request , res: Response) : Promise<Cu
             return res.json({
                 code: 404,
                 data: {},
+                type : false,
                 message: "Mật khẩu hiện tại không hợp lệ!"
             });
         }
@@ -237,8 +249,9 @@ export const updatePassword = async (req : Request , res: Response) : Promise<Cu
         let accessToken : String = await createAccessToken(account);
         return res.json({
             code: 200,
-            data: accountNew,
+            type : true,
             message: "Thay đổi thông tin thành công",
+            data: accountNew,
             AccessToken : accessToken
         });
 
@@ -246,6 +259,7 @@ export const updatePassword = async (req : Request , res: Response) : Promise<Cu
         return res.json({
             code: 400,
             data: {},
+            type : false,
             message: `${error.message}`
         });
     }   
