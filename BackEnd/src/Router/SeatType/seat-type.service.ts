@@ -1,18 +1,15 @@
-import express, { Request, Response } from "express";
+import { Express , Request , Response } from "express";
 import { v4 } from "uuid";
 import { config } from "../../dbconfig";
 import sql from "mssql";
 import { CustomResponse, Json } from "../../Response/Response";
 import {createAccessToken, RequestCheckToken} from "../../Middleware/Middleware";
 
-
-
-
-
-export const createOrUpdateUserType = async (req: Request, res: Response)  : Promise<CustomResponse> =>{
+export const CreateSeatType = async (req: Request , res : Response) : Promise<CustomResponse> =>{
     try{
-        let {
-            user_type_name,
+
+        let{
+            seat_type_name,
             is_active,
             is_delete
         } = req.body;
@@ -20,9 +17,9 @@ export const createOrUpdateUserType = async (req: Request, res: Response)  : Pro
         let {
             id
         } = req.params
- 
 
-        if(!user_type_name){
+
+        if(!seat_type_name){
             return res.json({
                 code: 500,
                 data: {},
@@ -41,30 +38,23 @@ export const createOrUpdateUserType = async (req: Request, res: Response)  : Pro
                 message: "Bạn không thuộc nhóm người dùng dùng chức năng này"
             });
         }
+
         let pool = await sql.connect(config);
         let result = await pool.request()
-            .input('id', id)
-            .input('user_type_name', user_type_name)
-            .input('is_active', is_active)
-            .input('is_delete', is_delete)
-            .execute('User_Type_CreateOrUpdate_AdminWeb')
-        
-        const UserType = result &&  result.recordset && result.recordset.length >0 && result.recordset[0] && result.recordset[0] ? result.recordset[0] : null ;
-        if(!UserType){
-            return res.json({
-                code: 500,
-                type : false,
-                data: {},
-                message: "Lưu không thành công"
-            });
-        }
+        .input('id', id)
+        .input('seat_type_name', seat_type_name)
+        .input('is_active', is_active)
+        .input('is_delete', is_delete)
+        .execute('SeatType_CreateOrUpdate_AdminWeb')
+
+
         return res.json({
             code: 200,
             type: true,
             message: "Lưu thành công",
-            data: UserType,
+            // data: result,
         });
-    }catch (error: any) {
+    }catch(error : any){
         return res.json({
             code: 400,
             type : false,
@@ -76,32 +66,23 @@ export const createOrUpdateUserType = async (req: Request, res: Response)  : Pro
 
 export const getList = async (req: Request, res: Response)  : Promise<CustomResponse> =>{
     try{
-        let {user_id , user_type_id} = (req as RequestCheckToken);
-        if(user_type_id != `1`){
-            return res.json({
-                code: 500,
-                type : false,
-                message: "Bạn không thuộc nhóm người dùng dùng chức năng này",
-                data: {},
-            });
-        }
                 
         let pool = await sql.connect(config);
-        let result = await pool.request().execute('User_Type_GetList_AdminWeb')
+        let result = await pool.request().execute('SeatType_GetList_AdminWeb')
         
-        const ListUserType = result &&  result.recordset && result.recordset.length >0 ? result.recordset: null ;
-        if(!ListUserType){
+        const ListSeatType = result &&  result.recordset && result.recordset.length >0 ? result.recordset: null ;
+        if(!ListSeatType){
             return res.json({
                 code: 500,
                 type : false,
                 data: {},
-                message: "Không tìm thấy danh sách loại người dùng"
+                message: "Không tìm thấy danh sách loại chỗ ngồi"
             });
         }
         return res.json({
             code: 200,
             type: true,
-            data: ListUserType,
+            data: ListSeatType,
             message: "Lấy danh sách thành công",
         });
     }catch (error: any) {
@@ -114,9 +95,7 @@ export const getList = async (req: Request, res: Response)  : Promise<CustomResp
     }
 }
 
-
-
-export const deleteUserType = async (req: Request, res: Response)  : Promise<CustomResponse> =>{
+export const deleteSeatType = async (req: Request, res: Response)  : Promise<CustomResponse> =>{
     try{
         let {user_id , user_type_id} = (req as RequestCheckToken);
         if(user_type_id != `1`){
@@ -134,7 +113,7 @@ export const deleteUserType = async (req: Request, res: Response)  : Promise<Cus
         let pool = await sql.connect(config);
         let result = await pool.request()
         .input('id', id)
-        .execute('User_Type_DeletebyId_AdminWeb')
+        .execute('SeatType_DeletebyId_AdminWeb')
         
         const ListUserType = result &&  result.recordset && result.recordset.length >0 && result.recordset[0] && result.recordset[0].RESULT ? result.recordset[0].RESULT : null;
         if(!ListUserType){
@@ -142,14 +121,14 @@ export const deleteUserType = async (req: Request, res: Response)  : Promise<Cus
                 code: 500,
                 type : false,
                 data: {},
-                message: "Xóa loại người dùng thất bại"
+                message: "Xóa loại chỗ ngồi thất bại"
             });
         }
         return res.json({
             code: 200,
             type: true,
             data: ListUserType,
-            message: "Xóa loại người dùng thành công",
+            message: "Xóa loại chỗ ngồi thành công",
         });
     }catch (error: any) {
         return res.json({
