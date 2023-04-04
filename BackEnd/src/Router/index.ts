@@ -10,7 +10,9 @@ import  {router as RoomTypeRouter}  from "./RoomType/room-type.route";
 
 import  {router as CinemaTypeRouter}  from "./CinemaType/cinema-type.route";
 
+import  {router as GenresRouter}  from "./Geners/genres.route";
 
+import {router  as CinemaRouter} from "./Cinemas/cinema.route";
 
 
 export const routers = [
@@ -34,5 +36,12 @@ export const routers = [
         prefix : '/cinema-type',
         router : CinemaTypeRouter
     },
-
+    {
+        prefix : '/genres',
+        router : GenresRouter
+    },
+    {
+        prefix : '/cinemas',
+        router : CinemaRouter
+    },
 ]
