@@ -3,7 +3,8 @@ import {checkToken} from "../../Middleware/Middleware";
 import {
     CreateSeatType,
     getList,
-    deleteSeatType
+    deleteSeatType,
+    getSeatTypeByID
 } from "./seat-type.service";
 
 export const router = express.Router({
@@ -17,6 +18,9 @@ router.post('/:id(\\d+)', checkToken ,  CreateSeatType);
 router.get('/', getList)
 
 router.delete('/:id(\\d+)', checkToken ,  deleteSeatType);
+
+router.get('/:id(\\d+)', checkToken ,  getSeatTypeByID);
+
 
 
 

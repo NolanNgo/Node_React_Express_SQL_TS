@@ -3,7 +3,8 @@ import {checkToken} from "../../Middleware/Middleware";
 import {
     createOrUpdateUserType,
     getList,
-    deleteUserType
+    deleteUserType,
+    getUserTypeByID
 } from "./Usertype.service";
 
 
@@ -18,4 +19,8 @@ router.put('/:id(\\d+)', checkToken ,  createOrUpdateUserType)
 router.get('/', checkToken ,  getList)
 
 router.delete('/:id(\\d+)', checkToken ,  deleteUserType)
+
+
+router.get('/:id(\\d+)', checkToken ,  getUserTypeByID)
+
 

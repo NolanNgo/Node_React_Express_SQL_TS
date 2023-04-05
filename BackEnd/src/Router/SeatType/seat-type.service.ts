@@ -139,3 +139,49 @@ export const deleteSeatType = async (req: Request, res: Response)  : Promise<Cus
         });
     }
 }
+
+
+export const getSeatTypeByID = async (req: Request, res: Response)  : Promise<CustomResponse> =>{
+    try{
+        let {user_id , user_type_id} = (req as RequestCheckToken);
+        if(user_type_id != `1`){
+            return res.json({
+                code: 500,
+                type : false,
+                message: "Bạn không thuộc nhóm người dùng dùng chức năng này",
+                data: {},
+            });
+        }
+        let {
+            id
+        } = req.params
+                
+        let pool = await sql.connect(config);
+        let result = await pool.request()
+        .input('id', id)
+        .execute('SeatType_getDetailByID_AdminWeb')
+        
+        const SeatTypeDetail = result &&  result.recordset && result.recordset.length >0 && result.recordset[0] ? result.recordset[0] : null;
+        if(!SeatTypeDetail){
+            return res.json({
+                code: 500,
+                type : false,
+                data: {},
+                message: "Lấy chi tiết loại chỗ ngồi thất bại"
+            });
+        }
+        return res.json({
+            code: 200,
+            type: true,
+            data: SeatTypeDetail,
+            message: "Lấy chi tiết loại chỗ ngồi thành công",
+        });
+    }catch (error: any) {
+        return res.json({
+            code: 400,
+            type : false,
+            data: {},
+            message: `${error.message}`
+        });
+    }
+}
