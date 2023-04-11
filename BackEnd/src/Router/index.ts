@@ -15,6 +15,10 @@ import  {router as GenresRouter}  from "./Geners/genres.route";
 import {router  as CinemaRouter} from "./Cinemas/cinema.route";
 
 
+import {router  as SeatRouter} from "./Seat/seat.route";
+
+
+
 export const routers = [
     {
         prefix : '/account',
@@ -44,4 +48,8 @@ export const routers = [
         prefix : '/cinemas',
         router : CinemaRouter
     },
+    {
+        prefix : '/seat',
+        router : SeatRouter
+    }
 ]
