@@ -14,9 +14,9 @@ import  {router as GenresRouter}  from "./Geners/genres.route";
 
 import {router  as CinemaRouter} from "./Cinemas/cinema.route";
 
-
 import {router  as SeatRouter} from "./Seat/seat.route";
 
+import {router as RoomRouter} from "./Room/room.route";
 
 
 export const routers = [
@@ -51,5 +51,9 @@ export const routers = [
     {
         prefix : '/seat',
         router : SeatRouter
+    },
+    {
+        prefix : '/room', 
+        router : RoomRouter
     }
 ]

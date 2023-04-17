@@ -18,6 +18,23 @@ export const createSeat = async(req : Request , res : Response) : Promise<Custom
             list_seat = [],
         } = req.body
         await transaction.begin();
+        const requestDeleteListSeat = new sql.Request(transaction);
+        const resultDelete = await requestDeleteListSeat
+        .input('id',room_id)
+        .execute('Seats_DeletebyRoomId_AdminWeb')
+
+        // Xóa tất cả các chỗ ngồi trong rap phim đấy
+        const isDelete =  resultDelete &&  resultDelete.recordset && resultDelete.recordset.length >0 && resultDelete.recordset[0] && resultDelete.recordset[0].RESULT ? resultDelete.recordset[0].RESULT : null;
+        if(!isDelete){
+            await transaction.rollback();
+            return res.json({
+                code : 500,
+                type : false,
+                data : {},
+                message : 'Đã xảy ra lỗi khi xóa tất cả chỗ ngồi của phòng chiếu'
+            })
+        }
+
         for(let i = 0; i< list_seat.length ; i++){
             const requestCreateOrUpdateListSeat = new sql.Request(transaction);
             const data = await requestCreateOrUpdateListSeat
